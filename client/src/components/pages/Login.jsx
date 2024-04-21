@@ -18,7 +18,8 @@ const GLogin = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/employee/login",
+        // "http://localhost:8080/api/employee/login",
+        "http://localhost:8000/api/employee/login",
         formData
       );
       console.log(response.data);

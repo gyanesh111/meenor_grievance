@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -10,6 +10,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import { Link as RouterLink } from "react-router-dom";
 import axios from "axios";
 
 // GrievanceForm component
@@ -27,7 +30,7 @@ const GrievanceForm = ({ onSubmit }) => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/grievance/create",
+        "http://localhost:8000/api/grievance/create",
         grievanceData
       );
       console.log(response.data);
@@ -239,7 +242,7 @@ const DeveloperPage = () => {
   const handleFetchTotalGrievances = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/grievance/developerhistory"
+        "http://localhost:8000/api/grievance/developerhistory"
       );
       // Extract grievance history array from response data
       const grievanceHistory = response.data.grievanceHistory;
@@ -255,7 +258,7 @@ const DeveloperPage = () => {
     const fetchGrievanceStats = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/grievance/status/employee"
+          "http://localhost:8000/api/grievance/status/employee"
         );
         setGrievanceStats(response.data);
       } catch (error) {
@@ -268,7 +271,26 @@ const DeveloperPage = () => {
 
   return (
     <>
-      <Typography variant="h1" sx={{ fontSize: "2rem", textAlign: "center" }}>
+      <AppBar position="sticky" sx={{ backgroundColor: "#1976d2" }}>
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            <RouterLink
+              to="/"
+              style={{ color: "white", textDecoration: "none" }}
+            >
+              Grievance Portal
+            </RouterLink>
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Typography
+        variant="h1"
+        sx={{
+          fontSize: "2rem",
+          textAlign: "center",
+          backgroundColor: "#f0f0f0",
+        }}
+      >
         WELCOME DEV.
       </Typography>
 
@@ -372,6 +394,21 @@ const DeveloperPage = () => {
           </Table>
         </TableContainer>
       )}
+
+      <AppBar
+        position="sticky"
+        sx={{ top: "auto", bottom: 0, backgroundColor: "#000" }}
+      >
+        <Toolbar>
+          <Typography
+            variant="body1"
+            gutterBottom
+            sx={{ flexGrow: 1, color: "#fff" }}
+          >
+            © 2024 Grievance Portal. All Rights Reserved.
+          </Typography>
+        </Toolbar>
+      </AppBar>
     </>
   );
 };

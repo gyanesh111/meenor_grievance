@@ -28,7 +28,7 @@ app.use("/api/employee", employeeRoutes); // Changed route to lowercase
 app.use("/api/grievance", grievanceRoutes); //grievance routes
 
 // Define the port
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8000;
 
 // Start the server
 app.listen(port, () => {

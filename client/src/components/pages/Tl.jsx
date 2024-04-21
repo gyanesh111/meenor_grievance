@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -20,7 +20,8 @@ const GrievanceForm = ({ onSubmit }) => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/grievance/create",
+        // "http://localhost:8080/api/grievance/create",
+        "http://localhost:8000/api/grievance/create",
         grievanceData
       );
       console.log(response.data);
@@ -137,14 +138,14 @@ const GrievanceForm = ({ onSubmit }) => {
   );
 };
 
-const ManagerPage = () => {
+const TlPage = () => {
   const [open, setOpen] = useState(false);
   const [showPersonalData, setShowPersonalData] = useState(false);
   const [showProfessionalData, setShowProfessionalData] = useState(false);
   const [totalGrievances, setTotalGrievances] = useState(0);
   const [totalGrievancesSolved, setTotalGrievancesSolved] = useState(0);
   const [recentGrievance, setRecentGrievance] = useState(null);
-  const [managerGrievances, setManagerGrievances] = useState([]);
+  const [tlGrievances, setTlGrievances] = useState([]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -162,7 +163,8 @@ const ManagerPage = () => {
   const fetchTotalGrievancesSolved = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/grievance/solved"
+        // "http://localhost:8080/api/grievance/solved"
+        "http://localhost:8000/api/grievance/solved"
       );
       setTotalGrievancesSolved(response.data.total);
     } catch (error) {
@@ -173,7 +175,8 @@ const ManagerPage = () => {
   const fetchRecentGrievance = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/grievance/recent/manager"
+        // "http://localhost:8080/api/grievance/recent/manager"
+        "http://localhost:8000/api/grievance/recent/tl"
       );
       setRecentGrievance(response.data);
     } catch (error) {
@@ -181,12 +184,13 @@ const ManagerPage = () => {
     }
   };
 
-  const fetchManagerGrievances = async () => {
+  const fetchTlGrievances = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/grievance/manager"
+        // "http://localhost:8080/api/grievance/manager"
+        "http://localhost:8000/api/grievance/tl"
       );
-      setManagerGrievances(response.data || []);
+      setTlGrievances(response.data || []);
     } catch (error) {
       console.error("Error fetching manager grievances:", error);
     }
@@ -205,7 +209,7 @@ const ManagerPage = () => {
   };
 
   const handleTotalClick = async () => {
-    fetchManagerGrievances();
+    fetchTlGrievances();
   };
 
   const handleRecentClick = async () => {
@@ -222,85 +226,119 @@ const ManagerPage = () => {
 
   return (
     <>
-      <Typography variant="h1" sx={{ fontSize: "2rem" }}>
-        WELCOME MANAGER
+      <Typography
+        variant="h1"
+        sx={{ fontSize: "2rem", textAlign: "center", marginTop: "20px" }}
+      >
+        WELCOME TL
       </Typography>
-      <div>
+      <Box
+        sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
+      >
         <Button
           onClick={handlePersonalClick}
-          sx={{ fontSize: "1.5rem", marginRight: "10px" }}
+          variant={showPersonalData ? "contained" : "outlined"}
+          sx={{ fontSize: "1.2rem", marginRight: "10px" }}
         >
           PERSONAL
         </Button>
         <Button
           onClick={handleOpen}
-          sx={{ fontSize: "1.5rem", marginRight: "10px" }}
+          variant="contained"
+          color="primary"
+          sx={{ fontSize: "1.2rem", marginRight: "10px" }}
         >
           RAISE GRIEVANCE
         </Button>
-        <Button onClick={handleProfessionalClick} sx={{ fontSize: "1.5rem" }}>
+        <Button
+          onClick={handleProfessionalClick}
+          variant={showProfessionalData ? "contained" : "outlined"}
+          sx={{ fontSize: "1.2rem" }}
+        >
           PROFESSIONAL
         </Button>
-      </div>
+      </Box>
 
       {showPersonalData && (
         <Box sx={{ width: "80%", margin: "auto", marginTop: "20px" }}>
-          <Typography variant="h3" sx={{ fontSize: "1.5rem" }}>
+          {/* HR Grievances Section */}
+          <Typography
+            variant="h3"
+            sx={{ fontSize: "1.5rem", marginTop: "20px" }}
+          >
             HR Grievances
           </Typography>
-          <Button
-            onClick={handleTotalClick}
-            sx={{ fontSize: "1.5rem", marginRight: "10px", marginTop: "10px" }}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "10px",
+            }}
           >
-            TOTAL
-          </Button>
-          <Button
-            onClick={handleRecentClick}
-            sx={{ fontSize: "1.5rem", marginRight: "10px", marginTop: "10px" }}
+            <Button
+              onClick={handleTotalClick}
+              variant="outlined"
+              sx={{ fontSize: "1.2rem" }}
+            >
+              TOTAL
+            </Button>
+            <Button
+              onClick={handleRecentClick}
+              variant="outlined"
+              sx={{ fontSize: "1.2rem" }}
+            >
+              RECENT
+            </Button>
+            <Button
+              onClick={handleSolvedClick}
+              variant="outlined"
+              sx={{ fontSize: "1.2rem" }}
+            >
+              SOLVED
+            </Button>
+          </Box>
+          <Typography
+            variant="body1"
+            sx={{ fontSize: "1.2rem", marginTop: "10px" }}
           >
-            RECENT
-          </Button>
-          <Button
-            onClick={handleSolvedClick}
-            sx={{ fontSize: "1.5rem", marginRight: "10px", marginTop: "10px" }}
-          >
-            SOLVED
-          </Button>
-          <Typography variant="body1" sx={{ fontSize: "1.2rem" }}>
             Total grievances raised: {totalGrievances}
           </Typography>
-          <Typography
-            variant="h3"
-            sx={{ fontSize: "1.5rem", marginTop: "20px" }}
-          >
-            Recent Grievance
-          </Typography>
-          <Typography variant="body1">
-            {recentGrievance
-              ? recentGrievance.description
-              : "No recent grievance"}
-          </Typography>
-
-          <Typography
-            variant="h3"
-            sx={{ fontSize: "1.5rem", marginTop: "20px" }}
-          >
-            Manager Grievances List
-          </Typography>
-          <ul>
-            {managerGrievances.map((grievance, index) => (
-              <li key={index}>{grievance.description}</li>
-            ))}
-          </ul>
+          <Box sx={{ marginTop: "20px" }}>
+            <Typography variant="h4" sx={{ fontSize: "1.3rem" }}>
+              TL Grievances List
+            </Typography>
+            <ul style={{ listStyleType: "none", paddingLeft: "0" }}>
+              {tlGrievances.map((grievance, index) => (
+                <li
+                  key={index}
+                  style={{
+                    marginBottom: "10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    padding: "10px",
+                  }}
+                >
+                  {grievance.description}
+                </li>
+              ))}
+            </ul>
+          </Box>
         </Box>
       )}
 
       {showProfessionalData && (
         <Box sx={{ width: "80%", margin: "auto", marginTop: "20px" }}>
-          <Typography variant="h3" sx={{ fontSize: "1.5rem" }}>
-            Recent Manager Grievance
+          {/* Recent Manager Grievance Section */}
+          <Typography
+            variant="h3"
+            sx={{ fontSize: "1.5rem", marginTop: "20px" }}
+          >
+            Recent TL Grievance
           </Typography>
-          <Typography variant="body1">
+          <Typography
+            variant="body1"
+            sx={{ fontSize: "1.2rem", marginTop: "10px" }}
+          >
             {recentGrievance
               ? recentGrievance.description
               : "No recent grievance"}
@@ -308,6 +346,7 @@ const ManagerPage = () => {
         </Box>
       )}
 
+      {/* Modal for Grievance Form */}
       <Modal
         open={open}
         onClose={handleClose}
@@ -339,4 +378,4 @@ const ManagerPage = () => {
   );
 };
 
-export default ManagerPage;
+export default TlPage;
