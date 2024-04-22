@@ -62,6 +62,7 @@ const employeeSchema = new mongoose.Schema({
       },
       name: String,
       grievanceName: String,
+      grievanceStatus: String,
     },
   ],
 });

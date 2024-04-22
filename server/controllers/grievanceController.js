@@ -7,6 +7,7 @@ const nodemailer = require("nodemailer"); // Import nodemailer for sending email
 const employeeModel = require("../models/employeeModel");
 const { ObjectId } = require("mongoose").Types;
 // Create nodemailer transporter to send emails via Gmail
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -107,19 +108,32 @@ const grievanceController = {
         email,
         description,
       } = req.body;
-      let existingEmployee;
 
-      // Check if employeeId is provided, if not, find employee by email
-      if (employeeId) {
-        existingEmployee = await Employee.findById(employeeId);
-      } else if (email) {
-        existingEmployee = await Employee.findOne({ email });
-      }
+      console.log(req.body);
 
-      // Check if employee exists
+      let existingEmployee = await Employee.findOne({ email });
+
+      //   // Check if employeeId is provided, if not, find employee by email
+      //     if (employeeId && ObjectId.isValid(employeeId)) {
+      //   existingEmployee = await Employee.findById(employeeId);
+      // } else if (email) {
+      //   existingEmployee = await Employee.findOne({ email });
+      // }
+
+      // // Check if employee exists
       if (!existingEmployee) {
         return res.status(404).json({ message: "Employee not found" });
       }
+      // if (employeeId && ObjectId.isValid(employeeId)) {
+      //   existingEmployee = await Employee.findById(employeeId);
+
+      // } else if (email) {
+      // }
+
+      // Check if employee exists
+      // if (!existingEmployee) {
+      //   return res.status(404).json({ message: "Employee not found" });
+      // }
 
       // Set status of grievance to "processing"
       const status = "processing";
@@ -279,25 +293,63 @@ const grievanceController = {
   // Controller function to get the most recent TL grievance
   getRecentTlGrievance: async (req, res) => {
     try {
-      const recentTlGrievance = await tlgrievances
-        .findOne()
-        .sort({ createdAt: -1 });
-      res.json(recentTlGrievance);
+      // Find all grievances and sort them by their default order in the database
+      const allGrievances = await tlgrievances
+        .find()
+        .sort({ $natural: -1 })
+        .limit(1);
+
+      // Check if any grievances exist
+      if (allGrievances.length === 0) {
+        return res.status(404).json({ message: "No grievances found" });
+      }
+
+      // Retrieve the last grievance from the sorted list
+      const lastAddedGrievance = allGrievances[0];
+
+      // Send the last added grievance as a response
+      res.json(lastAddedGrievance);
     } catch (error) {
-      console.error("Error fetching recent TL grievance:", error);
+      // Handle any errors that occur during the retrieval process
+      console.error("Error fetching last added grievance:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   },
 
-  // Controller function to get the most recent Manager grievance
+  // // Controller function to get the most recent Manager grievance
+  // getRecentManagerGrievance: async (req, res) => {
+  //   try {
+  //     const recentManagerGrievance = await managergrievances
+  //       .findOne()
+  //       .sort({ createdAt: -1 });
+  //     res.json(recentManagerGrievance);
+  //   } catch (error) {
+  //     console.error("Error fetching recent Manager grievance:", error);
+  //     res.status(500).json({ error: "Internal server error" });
+  //   }
+  // },
+
   getRecentManagerGrievance: async (req, res) => {
     try {
-      const recentManagerGrievance = await managergrievances
-        .findOne()
-        .sort({ createdAt: -1 });
-      res.json(recentManagerGrievance);
+      // Find all grievances and sort them by their default order in the database
+      const allGrievances = await managergrievances
+        .find()
+        .sort({ $natural: -1 })
+        .limit(1);
+
+      // Check if any grievances exist
+      if (allGrievances.length === 0) {
+        return res.status(404).json({ message: "No grievances found" });
+      }
+
+      // Retrieve the last grievance from the sorted list
+      const lastAddedGrievance = allGrievances[0];
+
+      // Send the last added grievance as a response
+      res.json(lastAddedGrievance);
     } catch (error) {
-      console.error("Error fetching recent Manager grievance:", error);
+      // Handle any errors that occur during the retrieval process
+      console.error("Error fetching last added grievance:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   },
@@ -305,12 +357,25 @@ const grievanceController = {
   // Controller function to get the most recent HR grievance
   getRecentHrGrievance: async (req, res) => {
     try {
-      const recentHrGrievance = await hrgrievances
-        .findOne()
-        .sort({ createdAt: -1 });
-      res.json(recentHrGrievance);
+      // Find all grievances and sort them by their default order in the database
+      const allGrievances = await hrgrievances
+        .find()
+        .sort({ $natural: -1 })
+        .limit(1);
+
+      // Check if any grievances exist
+      if (allGrievances.length === 0) {
+        return res.status(404).json({ message: "No grievances found" });
+      }
+
+      // Retrieve the last grievance from the sorted list
+      const lastAddedGrievance = allGrievances[0];
+
+      // Send the last added grievance as a response
+      res.json(lastAddedGrievance);
     } catch (error) {
-      console.error("Error fetching recent HR grievance:", error);
+      // Handle any errors that occur during the retrieval process
+      console.error("Error fetching last added grievance:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   },

@@ -3,7 +3,9 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const employeeRoutes = require("./routes/employeeRoutes");
 const grievanceRoutes = require("./routes/grievanceRoutes");
+
 const cors = require("cors");
+
 // Load environment variables from .env file
 dotenv.config();
 
@@ -28,7 +30,7 @@ app.use("/api/employee", employeeRoutes); // Changed route to lowercase
 app.use("/api/grievance", grievanceRoutes); //grievance routes
 
 // Define the port
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
 
 // Start the server
 app.listen(port, () => {

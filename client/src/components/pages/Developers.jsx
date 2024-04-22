@@ -30,7 +30,7 @@ const GrievanceForm = ({ onSubmit }) => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/grievance/create",
+        "http://localhost:8080/api/grievance/create",
         grievanceData
       );
       console.log(response.data);
@@ -242,7 +242,7 @@ const DeveloperPage = () => {
   const handleFetchTotalGrievances = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/grievance/developerhistory"
+        "http://localhost:8080/api/grievance/developerhistory"
       );
       // Extract grievance history array from response data
       const grievanceHistory = response.data.grievanceHistory;
@@ -258,7 +258,7 @@ const DeveloperPage = () => {
     const fetchGrievanceStats = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/grievance/status/employee"
+          "http://localhost:8080/api/grievance/status/employee"
         );
         setGrievanceStats(response.data);
       } catch (error) {
@@ -388,6 +388,7 @@ const DeveloperPage = () => {
                 <TableRow key={grievance._id}>
                   <TableCell>{grievance.grievanceId}</TableCell>
                   <TableCell>{grievance.grievanceName}</TableCell>
+                  <TableCell>{grievance.grievanceStatus}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -39,6 +39,9 @@ const Footer = () => (
   </Box>
 );
 
+// GrievanceForm component...
+// ManagerPage component...
+
 const GrievanceForm = ({ onSubmit }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -49,16 +52,16 @@ const GrievanceForm = ({ onSubmit }) => {
       department: formData.get("department"),
       severity: formData.get("severity"),
       description: formData.get("description"),
-      role: "hr",
+      role: "HR", // Set role as 'HR' for manager
     };
     try {
-      console.log(grievanceData);
       const response = await axios.post(
+        // "http://localhost:8080/api/grievance/create",
         "http://localhost:8080/api/grievance/create",
         grievanceData
       );
       console.log(response.data);
-      onSubmit();
+      onSubmit(); // Trigger callback function after successful submission
     } catch (error) {
       console.error("Error:", error);
     }
@@ -67,32 +70,71 @@ const GrievanceForm = ({ onSubmit }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-gray-200 p-8 rounded-lg w-96 mx-auto"
+      style={{
+        backgroundColor: "#f0f0f0",
+        padding: "20px",
+        borderRadius: "10px",
+        width: "800px",
+        margin: "auto",
+      }}
     >
+      {/* Input fields */}
       <input
         type="text"
         name="name"
         placeholder="Name"
-        className="w-full h-14 mb-4 px-4 rounded border border-gray-300"
+        style={{
+          width: "100%",
+          height: "50px",
+          marginBottom: "10px",
+          padding: "10px",
+          borderRadius: "5px",
+          border: "1px solid #ccc",
+          fontSize: "1.5rem",
+        }}
         required
       />
       <input
         type="email"
         name="email"
         placeholder="Email"
-        className="w-full h-14 mb-4 px-4 rounded border border-gray-300"
+        style={{
+          width: "100%",
+          height: "50px",
+          marginBottom: "10px",
+          padding: "10px",
+          borderRadius: "5px",
+          border: "1px solid #ccc",
+          fontSize: "1.5rem",
+        }}
         required
       />
       <input
         type="text"
         name="department"
         placeholder="Department"
-        className="w-full h-14 mb-4 px-4 rounded border border-gray-300"
+        style={{
+          width: "100%",
+          height: "50px",
+          marginBottom: "10px",
+          padding: "10px",
+          borderRadius: "5px",
+          border: "1px solid #ccc",
+          fontSize: "1.5rem",
+        }}
         required
       />
       <select
         name="severity"
-        className="w-full h-14 mb-4 px-4 rounded border border-gray-300"
+        style={{
+          width: "100%",
+          height: "50px",
+          marginBottom: "10px",
+          padding: "10px",
+          borderRadius: "5px",
+          border: "1px solid #ccc",
+          fontSize: "1.5rem",
+        }}
         required
       >
         <option value="">Select Severity</option>
@@ -100,24 +142,49 @@ const GrievanceForm = ({ onSubmit }) => {
         <option value="major">Major</option>
         <option value="critical">Critical</option>
       </select>
+
       <select
         name="role"
-        className="w-full h-14 mb-4 px-4 rounded border border-gray-300"
+        style={{
+          width: "100%",
+          height: "50px",
+          marginBottom: "10px",
+          padding: "10px",
+          borderRadius: "5px",
+          border: "1px solid #ccc",
+          fontSize: "1.5rem",
+        }}
         required
       >
-        <option value="">Select role</option>
-        <option value="minor">hr</option>
+        <option value="">Select Role</option>
+        <option value="major">HR</option>
       </select>
+
       <textarea
         name="description"
         placeholder="Description"
-        className="w-full h-40 mb-4 px-4 rounded border border-gray-300"
+        style={{
+          width: "100%",
+          height: "200px",
+          marginBottom: "10px",
+          padding: "10px",
+          borderRadius: "5px",
+          border: "1px solid #ccc",
+          fontSize: "1.5rem",
+        }}
         required
       />
       <Button
         type="submit"
         variant="contained"
-        className="bg-blue-600 text-white px-8 py-3 rounded"
+        style={{
+          backgroundColor: "#1976d2",
+          color: "#fff",
+          padding: "10px 20px",
+          borderRadius: "5px",
+          border: "none",
+          fontSize: "1.5rem",
+        }}
       >
         Submit
       </Button>
@@ -130,9 +197,9 @@ const ManagerPage = () => {
   const [showPersonalData, setShowPersonalData] = useState(false);
   const [showProfessionalData, setShowProfessionalData] = useState(false);
   const [totalGrievances, setTotalGrievances] = useState(0);
+  // const [totalGrievancesSolved, setTotalGrievancesSolved] = useState(0);
   const [recentGrievance, setRecentGrievance] = useState(null);
   const [managerGrievances, setManagerGrievances] = useState([]);
-  const [showResolveOptions, setShowResolveOptions] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -147,20 +214,22 @@ const ManagerPage = () => {
     setTotalGrievances(totalGrievances + 1);
   };
 
-  const fetchTotalGrievances = async () => {
+  const fetchTotalGrievancesSolved = async () => {
     try {
       const response = await axios.get(
+        // "http://localhost:8080/api/grievance/solved"
         "http://localhost:8080/api/grievance/solved"
       );
-      setTotalGrievances(response.data.total);
+      setTotalGrievancesSolved(response.data.total);
     } catch (error) {
-      console.error("Error fetching total grievances:", error);
+      console.error("Error fetching total grievances solved:", error);
     }
   };
 
   const fetchRecentGrievance = async () => {
     try {
       const response = await axios.get(
+        // "http://localhost:8080/api/grievance/recent/manager"
         "http://localhost:8080/api/grievance/recent/manager"
       );
       setRecentGrievance(response.data);
@@ -172,6 +241,7 @@ const ManagerPage = () => {
   const fetchManagerGrievances = async () => {
     try {
       const response = await axios.get(
+        // "http://localhost:8080/api/grievance/manager"
         "http://localhost:8080/api/grievance/manager"
       );
       setManagerGrievances(response.data || []);
@@ -180,70 +250,44 @@ const ManagerPage = () => {
     }
   };
 
-  const handlePersonalClick = () => {
+  const handlePersonalClick = async () => {
     setShowPersonalData(true);
     setShowProfessionalData(false);
-    fetchTotalGrievances();
+    fetchTotalGrievancesSolved();
   };
 
-  const handleProfessionalClick = () => {
+  const handleProfessionalClick = async () => {
     setShowPersonalData(false);
     setShowProfessionalData(true);
     fetchRecentGrievance();
   };
 
-  const handleTotalClick = () => {
+  const handleTotalClick = async () => {
     fetchManagerGrievances();
   };
 
-  const handleRecentClick = () => {
+  const handleRecentClick = async () => {
     fetchRecentGrievance();
   };
 
-  const handleResolveButtonClick = () => {
-    setShowResolveOptions(true);
-  };
-
-  const handleMeetingButtonClick = async () => {
-    try {
-      // Make API call to update the status of the grievance to "completed"
-      await axios.put("http://localhost:8080/api/grievance/resolve");
-      // Optionally, you can add logic to handle success or display a message
-      console.log("Grievance resolved successfully");
-      // After resolving the grievance, fetch the recent grievance again to update the UI
-      fetchRecentGrievance();
-    } catch (error) {
-      console.error("Error resolving grievance:", error);
-      // Optionally, you can add logic to handle errors or display an error message
-    }
-  };
-
-  const handleCallButtonClick = async () => {
-    try {
-      // Make API call to update the status of the grievance to "completed"
-      await axios.put("http://localhost:8080/api/grievance/resolve");
-      // Optionally, you can add logic to handle success or display a message
-      console.log("Grievance resolved successfully");
-      // After resolving the grievance, fetch the recent grievance again to update the UI
-      fetchRecentGrievance();
-    } catch (error) {
-      console.error("Error resolving grievance:", error);
-      // Optionally, you can add logic to handle errors or display an error message
-    }
+  const handleSolvedClick = async () => {
+    fetchTotalGrievancesSolved();
   };
 
   useEffect(() => {
-    fetchTotalGrievances();
+    fetchTotalGrievancesSolved();
   }, []);
 
   return (
     <>
       <Header />
-      <Box className="flex justify-center mt-8">
+      <Box
+        sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
+      >
         <Button
           onClick={handlePersonalClick}
           variant={showPersonalData ? "contained" : "outlined"}
-          className="text-lg mr-4"
+          sx={{ fontSize: "1.2rem", marginRight: "10px" }}
         >
           PERSONAL
         </Button>
@@ -251,59 +295,79 @@ const ManagerPage = () => {
           onClick={handleOpen}
           variant="contained"
           color="primary"
-          className="text-lg mr-4"
+          sx={{ fontSize: "1.2rem", marginRight: "10px" }}
         >
           RAISE GRIEVANCE
         </Button>
         <Button
           onClick={handleProfessionalClick}
           variant={showProfessionalData ? "contained" : "outlined"}
-          className="text-lg"
+          sx={{ fontSize: "1.2rem" }}
         >
           PROFESSIONAL
         </Button>
       </Box>
 
       {showPersonalData && (
-        <Box className="w-80 mx-auto mt-8">
-          <Typography variant="h3" className="text-lg mt-8">
+        <Box sx={{ width: "80%", margin: "auto", marginTop: "20px" }}>
+          {/* HR Grievances Section */}
+          <Typography
+            variant="h3"
+            sx={{ fontSize: "1.5rem", marginTop: "20px" }}
+          >
             HR Grievances
           </Typography>
-          <Box className="flex justify-between mt-4">
-            <Button onClick={handleTotalClick} className="text-lg">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "10px",
+            }}
+          >
+            <Button
+              onClick={handleTotalClick}
+              variant="outlined"
+              sx={{ fontSize: "1.2rem" }}
+            >
               TOTAL
             </Button>
-            <Button onClick={handleRecentClick} className="text-lg">
+            <Button
+              onClick={handleRecentClick}
+              variant="outlined"
+              sx={{ fontSize: "1.2rem" }}
+            >
               RECENT
             </Button>
+            <Button
+              onClick={handleSolvedClick}
+              variant="outlined"
+              sx={{ fontSize: "1.2rem" }}
+            >
+              SOLVED
+            </Button>
           </Box>
-          <Typography variant="body1" className="text-lg mt-4">
+          <Typography
+            variant="body1"
+            sx={{ fontSize: "1.2rem", marginTop: "10px" }}
+          >
             Total grievances raised: {totalGrievances}
           </Typography>
-          <Box className="mt-8">
-            <Typography variant="h4" className="text-lg">
+          <Box sx={{ marginTop: "20px" }}>
+            <Typography variant="h4" sx={{ fontSize: "1.3rem" }}>
               Manager Grievances List
             </Typography>
-            <ul className="list-none pl-0">
+            <ul style={{ listStyleType: "none", paddingLeft: "0" }}>
               {managerGrievances.map((grievance, index) => (
                 <li
                   key={index}
-                  className={`mb-4 border rounded border-gray-300 p-4 ${
-                    grievance.status === "resolved"
-                      ? "bg-green-100"
-                      : "bg-red-100"
-                  }`}
+                  style={{
+                    marginBottom: "10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    padding: "10px",
+                  }}
                 >
-                  {grievance.name} - - {grievance.description} --{" "}
-                  <span
-                    className={
-                      grievance.status === "resolved"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }
-                  >
-                    {grievance.status}
-                  </span>
+                  {grievance.description}
                 </li>
               ))}
             </ul>
@@ -312,57 +376,49 @@ const ManagerPage = () => {
       )}
 
       {showProfessionalData && (
-        <Box className="w-80 mx-auto mt-8">
-          <Typography variant="h5" className="text-lg mt-8">
+        <Box sx={{ width: "80%", margin: "auto", marginTop: "20px" }}>
+          {/* Recent Manager Grievance Section */}
+          <Typography
+            variant="h3"
+            sx={{ fontSize: "1.5rem", marginTop: "20px" }}
+          >
             Recent Manager Grievance
           </Typography>
-          <Typography>
-            {`${recentGrievance.name} - ${recentGrievance.description}- ${recentGrievance.status}`}
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            className="mt-8"
-            onClick={handleResolveButtonClick}
+          <Typography
+            variant="body1"
+            sx={{ fontSize: "1.2rem", marginTop: "10px" }}
           >
-            RESOLVE
-          </Button>
-          {showResolveOptions && (
-            <Box className="mt-4">
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className="mr-4"
-                onClick={handleMeetingButtonClick}
-              >
-                FIX MEETING
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={handleCallButtonClick}
-              >
-                CALL
-              </Button>
-            </Box>
-          )}
+            {recentGrievance
+              ? recentGrievance.description
+              : "No recent grievance"}
+          </Typography>
         </Box>
       )}
 
+      {/* Modal for Grievance Form */}
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
-        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-lg p-8 rounded">
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            maxWidth: "80%",
+            minWidth: "400px",
+          }}
+        >
           <Typography id="modal-title" variant="h6" component="h2">
             Raise Grievance
           </Typography>
-          <Typography id="modal-description" className="mt-4">
+          <Typography id="modal-description" sx={{ mt: 2 }}>
             <GrievanceForm onSubmit={handleFormSubmit} />
           </Typography>
         </Box>

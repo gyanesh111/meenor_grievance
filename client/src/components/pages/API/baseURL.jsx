@@ -1,9 +1,11 @@
-import axios from "axios";
+import axios from 'axios';
 
 const grievanceBaseUrl = axios.create({
-  //baseURL: "http://192.168.30.40:90",
-  baseURL: "http://localhost:8000",
-  withCredentials: true,
+    //baseURL: "http://192.168.30.40:90",
+    baseURL: "http://localhost:8080",
+    withCredentials : true,
+
+
 });
 
 export default grievanceBaseUrl;

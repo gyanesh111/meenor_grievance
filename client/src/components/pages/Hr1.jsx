@@ -16,7 +16,6 @@ const HrPage = () => {
   const [totalGrievancesSolved, setTotalGrievancesSolved] = useState(0);
   const [recentGrievance, setRecentGrievance] = useState(null);
   const [hrGrievances, setHrGrievances] = useState([]);
-  const [grievanceResolved, setGrievanceResolved] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -83,39 +82,17 @@ const HrPage = () => {
         console.log("Grievance resolved:", response.data);
         // Update the recent grievance status locally
         setRecentGrievance({ ...recentGrievance, status: "Completed" });
-        // Set the state variable to indicate that the grievance has been resolved
-        setGrievanceResolved(true);
       }
     } catch (error) {
       console.error("Error resolving grievance:", error);
     }
   };
 
-  const handleMeeting = async () => {
+  const handleFetchTotalHRGrievances = async () => {
     try {
-      // Make API call to update the status of the grievance to "completed"
-      await axios.put("http://localhost:8080/api/grievance/resolve");
-      // Optionally, you can add logic to handle success or display a message
-      console.log("Grievance resolved successfully");
-      // After resolving the grievance, fetch the recent grievance again to update the UI
-      fetchRecentGrievance();
+      fetchHrGrievances();
     } catch (error) {
-      console.error("Error resolving grievance:", error);
-      // Optionally, you can add logic to handle errors or display an error message
-    }
-  };
-
-  const handleCall = async () => {
-    try {
-      // Make API call to update the status of the grievance to "completed"
-      await axios.put("http://localhost:8080/api/grievance/resolve");
-      // Optionally, you can add logic to handle success or display a message
-      console.log("Grievance resolved successfully");
-      // After resolving the grievance, fetch the recent grievance again to update the UI
-      fetchRecentGrievance();
-    } catch (error) {
-      console.error("Error resolving grievance:", error);
-      // Optionally, you can add logic to handle errors or display an error message
+      console.error("Error fetching total HR grievances:", error);
     }
   };
 
@@ -146,7 +123,7 @@ const HrPage = () => {
               component="div"
               sx={{ flexGrow: 1, textAlign: "center" }}
             >
-              QUGATES TECHNOLOGIES
+              Your Nicely Written Logo
             </Typography>
             <nav>
               <RouterLink
@@ -192,99 +169,47 @@ const HrPage = () => {
           Professional
         </Button>
       </Box>
-
       {showPersonalData && (
-        <Box sx={{ marginTop: "0.2rem", textAlign: "center" }}>
+        <Box sx={{ marginTop: "2rem", textAlign: "center" }}>
           <Button
             variant="contained"
             onClick={handleFetchTotalGrievances}
-            sx={{ marginRight: "0.5rem" }}
-          >
-            Total Grievances Alotted
-          </Button>
-          <Button
-            variant="contained"
-            onClick={fetchTotalGrievancesSolved}
             sx={{ marginRight: "1rem" }}
           >
-            Total Grievances Resolved
+            Total Grievances
           </Button>
-
+          <Button variant="contained" onClick={fetchRecentGrievance}>
+            Recent Grievance
+          </Button>
+          <Typography variant="h6">
+            Total Grievances Solved: {totalGrievancesSolved}
+          </Typography>
           {totalGrievances > 0 && (
-            <Box sx={{ marginTop: "0.5rem", textAlign: "left" }}>
+            <Box sx={{ marginTop: "1rem", textAlign: "left" }}>
               <Typography variant="h6">Total HR Grievances:</Typography>
               <ul>
                 {hrGrievances.map((grievance) => (
-                  <li
-                    key={grievance._id}
-                    className="mb-2 border rounded border-gray-100 p-1"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="mb-1">{grievance.name}</p>
-                        <p className="mb-1">{grievance.description}</p>
-                      </div>
-                      <span
-                        className={
-                          grievance.status === "resolved"
-                            ? "bg-green-800 text-white p-1 rounded"
-                            : "bg-red-500 text-white p-1 rounded"
-                        }
-                      >
-                        {grievance.status}
-                      </span>
-                    </div>
-                  </li>
+                  <li key={grievance._id}>{grievance.description}</li>
                 ))}
               </ul>
             </Box>
           )}
         </Box>
       )}
-
       {showProfessionalData && (
         <Box sx={{ marginTop: "2rem", textAlign: "center" }}>
           {recentGrievance && (
             <>
               <Typography variant="h6">Recent Grievance:</Typography>
-              <Typography>
-                {`${recentGrievance.name} - ${recentGrievance.description} `}
-                <span
-                  className={
-                    recentGrievance.status === "resolved"
-                      ? "bg-green-500 text-white p-1 rounded"
-                      : "bg-red-500 text-white p-1 rounded"
-                  }
-                >
-                  {recentGrievance.status}
-                </span>
-                {` ${recentGrievance.date}`}
-              </Typography>
-
+              <Typography>{recentGrievance.description}</Typography>
               {recentGrievance.status !== "Completed" && (
-                <>
-                  <Button
-                    variant="contained"
-                    onClick={handleResolve}
-                    sx={{ marginTop: "1rem" }}
-                  >
-                    Resolve
-                  </Button>
-                  {grievanceResolved && (
-                    <Box sx={{ marginTop: "1rem" }}>
-                      <Button
-                        variant="contained"
-                        onClick={handleMeeting}
-                        sx={{ marginRight: "0.5rem" }}
-                      >
-                        FIX MEETING
-                      </Button>
-                      <Button variant="contained" onClick={handleCall}>
-                        CALL
-                      </Button>
-                    </Box>
-                  )}
-                </>
+                <Button
+                  variant="contained"
+                  onClick={handleResolve}
+                  sx={{ marginTop: "1rem" }}
+                >
+                  Resolve
+                </Button>
               )}
             </>
           )}
@@ -293,7 +218,6 @@ const HrPage = () => {
           )}
         </Box>
       )}
-
       <Modal
         open={open}
         onClose={handleClose}
@@ -320,7 +244,7 @@ const HrPage = () => {
       <Box sx={{ flexGrow: 1 }}>
         <footer
           style={{
-            backgroundColor: "#222",
+            backgroundColor: "#333",
             color: "#fff",
             padding: "20px 0",
             textAlign: "center",

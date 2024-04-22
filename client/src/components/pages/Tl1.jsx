@@ -94,23 +94,19 @@ const TlPage = () => {
   const [recentGrievance, setRecentGrievance] = useState(null);
   const [tlGrievances, setTlGrievances] = useState([]);
 
-  // Open modal
   const handleOpen = () => {
     setOpen(true);
   };
 
-  // Close modal
   const handleClose = () => {
     setOpen(false);
   };
 
-  // Callback after form submission
   const handleFormSubmit = () => {
     handleClose();
     setTotalGrievances(totalGrievances + 1);
   };
 
-  // Fetch total grievances solved
   const fetchTotalGrievancesSolved = async () => {
     try {
       const response = await axios.get(
@@ -122,7 +118,6 @@ const TlPage = () => {
     }
   };
 
-  // Fetch recent grievance
   const fetchRecentGrievance = async () => {
     try {
       const response = await axios.get(
@@ -134,7 +129,6 @@ const TlPage = () => {
     }
   };
 
-  // Fetch TL grievances
   const fetchTlGrievances = async () => {
     try {
       const response = await axios.get(
@@ -142,11 +136,10 @@ const TlPage = () => {
       );
       setTlGrievances(response.data || []);
     } catch (error) {
-      console.error("Error fetching TL grievances:", error);
+      console.error("Error fetching manager grievances:", error);
     }
   };
 
-  // Handle click events
   const handlePersonalClick = async () => {
     setShowPersonalData(true);
     setShowProfessionalData(false);
@@ -163,11 +156,14 @@ const TlPage = () => {
     fetchTlGrievances();
   };
 
+  const handleRecentClick = async () => {
+    fetchRecentGrievance();
+  };
+
   const handleSolvedClick = async () => {
     fetchTotalGrievancesSolved();
   };
 
-  // Fetch total grievances on initial render
   useEffect(() => {
     fetchTotalGrievancesSolved();
   }, []);
@@ -206,46 +202,42 @@ const TlPage = () => {
 
       {showPersonalData && (
         <div className="w-80 mx-auto mt-20">
-          <h3 className="text-xl mt-4">TL Grievances</h3>
+          <h3 className="text-xl mt-4">HR Grievances</h3>
           <div className="flex justify-between mt-4">
             <button
               onClick={handleTotalClick}
-              className="px-4 py-2 rounded border border-black-500 bg-blue-300"
+              className="px-4 py-2 rounded border border-blue-500"
             >
               TOTAL
             </button>
-
+            <button
+              onClick={handleRecentClick}
+              className="px-4 py-2 rounded border border-blue-500"
+            >
+              RECENT
+            </button>
             <button
               onClick={handleSolvedClick}
-              className="px-4 py-2 rounded border border-blue-500 bg-green-500 text-white"
+              className="px-4 py-2 rounded border border-blue-500"
             >
               SOLVED
             </button>
           </div>
-
+          <p className="text-lg mt-4">
+            Total grievances raised: {totalGrievances}
+          </p>
           <div className="mt-8">
             <h4 className="text-lg">TL Grievances List</h4>
-            <ol className="mb-4 border rounded border-gray-300 p-4">
+            <ul className="list-none pl-0">
               {tlGrievances.map((grievance, index) => (
                 <li
                   key={index}
-                  className={`mb-4 border rounded border-gray-300 p-4 ${
-                    grievance.status !== "resolved" ? "bg-red-100" : ""
-                  }`}
+                  className="mb-4 border rounded border-gray-300 p-4"
                 >
-                  {grievance.name} -- {grievance.description} --
-                  <span
-                    className={
-                      grievance.status === "resolved"
-                        ? "bg-green-500 text-white p-1 rounded"
-                        : "text-red-600"
-                    }
-                  >
-                    {grievance.status}
-                  </span>
+                  {grievance.description}
                 </li>
               ))}
-            </ol>
+            </ul>
           </div>
         </div>
       )}
@@ -254,25 +246,9 @@ const TlPage = () => {
         <div className="w-80 mx-auto mt-20">
           <h3 className="text-xl mt-4">Recent TL Grievance</h3>
           <p className="text-lg mt-4">
-            {recentGrievance ? (
-              <>
-                <span>{recentGrievance.name} - </span>
-                <span>{recentGrievance.description} - </span>
-                <span
-                  style={{
-                    backgroundColor: "red",
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: "0.2rem",
-                    color: "white",
-                    border: "none",
-                  }}
-                >
-                  {recentGrievance.status}
-                </span>
-              </>
-            ) : (
-              "No recent grievance"
-            )}
+            {recentGrievance
+              ? recentGrievance.description
+              : "No recent grievance"}
           </p>
         </div>
       )}
