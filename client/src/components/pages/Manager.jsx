@@ -1,44 +1,7 @@
 import { useState, useEffect } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
 import axios from "axios";
 
-const Header = () => (
-  <Box
-    sx={{
-      position: "sticky",
-      top: 0,
-      zIndex: 1,
-      backgroundColor: "#1976d2",
-      padding: "10px 0",
-      textAlign: "center",
-    }}
-  >
-    <Typography variant="h1" sx={{ color: "#fff", fontSize: "2rem" }}>
-      WELCOME MANAGER
-    </Typography>
-  </Box>
-);
-
-const Footer = () => (
-  <Box
-    sx={{
-      position: "sticky",
-      bottom: 0,
-      zIndex: 1,
-      backgroundColor: "#000",
-      padding: "10px 0",
-      textAlign: "center",
-    }}
-  >
-    <Typography variant="body1" sx={{ color: "#fff" }}>
-      © 2024 Grievance Portal. All Rights Reserved.
-    </Typography>
-  </Box>
-);
-
+// GrievanceForm component
 const GrievanceForm = ({ onSubmit }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -49,50 +12,47 @@ const GrievanceForm = ({ onSubmit }) => {
       department: formData.get("department"),
       severity: formData.get("severity"),
       description: formData.get("description"),
-      role: "hr",
+      role: "hr", // Set role as 'HR' for manager
     };
     try {
-      console.log(grievanceData);
       const response = await axios.post(
         "http://localhost:8080/api/grievance/create",
         grievanceData
       );
       console.log(response.data);
-      onSubmit();
+      onSubmit(); // Trigger callback function after successful submission
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-gray-200 p-8 rounded-lg w-96 mx-auto"
-    >
+    <form onSubmit={handleSubmit} className="bg-gray-200 p-8 rounded-lg w-full">
+      {/* Input fields */}
       <input
         type="text"
         name="name"
         placeholder="Name"
-        className="w-full h-14 mb-4 px-4 rounded border border-gray-300"
+        className="w-full h-12 mb-4 px-4 rounded border border-gray-300"
         required
       />
       <input
         type="email"
         name="email"
         placeholder="Email"
-        className="w-full h-14 mb-4 px-4 rounded border border-gray-300"
+        className="w-full h-12 mb-4 px-4 rounded border border-gray-300"
         required
       />
       <input
         type="text"
         name="department"
         placeholder="Department"
-        className="w-full h-14 mb-4 px-4 rounded border border-gray-300"
+        className="w-full h-12 mb-4 px-4 rounded border border-gray-300"
         required
       />
       <select
         name="severity"
-        className="w-full h-14 mb-4 px-4 rounded border border-gray-300"
+        className="w-full h-12 mb-4 px-4 rounded border border-gray-300"
         required
       >
         <option value="">Select Severity</option>
@@ -102,25 +62,24 @@ const GrievanceForm = ({ onSubmit }) => {
       </select>
       <select
         name="role"
-        className="w-full h-14 mb-4 px-4 rounded border border-gray-300"
+        className="w-full h-12 mb-4 px-4 rounded border border-gray-300"
         required
       >
-        <option value="">Select role</option>
-        <option value="minor">hr</option>
+        <option value="">Select Role</option>
+        <option value="hr">hr</option>
       </select>
       <textarea
         name="description"
         placeholder="Description"
-        className="w-full h-40 mb-4 px-4 rounded border border-gray-300"
+        className="w-full h-32 mb-4 px-4 rounded border border-gray-300"
         required
       />
-      <Button
+      <button
         type="submit"
-        variant="contained"
-        className="bg-blue-600 text-white px-8 py-3 rounded"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Submit
-      </Button>
+      </button>
     </form>
   );
 };
@@ -133,31 +92,49 @@ const ManagerPage = () => {
   const [recentGrievance, setRecentGrievance] = useState(null);
   const [managerGrievances, setManagerGrievances] = useState([]);
   const [showResolveOptions, setShowResolveOptions] = useState(false);
-
+  // Open modal
   const handleOpen = () => {
     setOpen(true);
   };
 
+  // Close modal
   const handleClose = () => {
     setOpen(false);
   };
 
+  // Callback after form submission
   const handleFormSubmit = () => {
     handleClose();
     setTotalGrievances(totalGrievances + 1);
   };
 
-  const fetchTotalGrievances = async () => {
+  // Placeholder function for handling resolve button click
+  const handleResolve = async (_id) => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/api/grievance/solved"
+      // Assuming recentGrievance has an _id property
+      const response = await axios.put(
+        `http://localhost:8080/api/grievance/resolve/${_id}`
       );
-      setTotalGrievances(response.data.total);
+      // Assuming the API returns the updated grievance data
+      setRecentGrievance(response.data);
     } catch (error) {
-      console.error("Error fetching total grievances:", error);
+      console.error("Error resolving grievance:", error);
     }
   };
 
+  // // Fetch total grievances solved
+  // const fetchTotalGrievancesSolved = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "http://localhost:8080/api/grievance/solved"
+  //     );
+  //     setTotalGrievancesSolved(response.data.total);
+  //   } catch (error) {
+  //     console.error("Error fetching total grievances solved:", error);
+  //   }
+  // };
+
+  // Fetch recent grievance
   const fetchRecentGrievance = async () => {
     try {
       const response = await axios.get(
@@ -169,6 +146,7 @@ const ManagerPage = () => {
     }
   };
 
+  // Fetch manager grievances
   const fetchManagerGrievances = async () => {
     try {
       const response = await axios.get(
@@ -180,195 +158,175 @@ const ManagerPage = () => {
     }
   };
 
-  const handlePersonalClick = () => {
+  // Handle click events
+  const handlePersonalClick = async () => {
     setShowPersonalData(true);
     setShowProfessionalData(false);
-    fetchTotalGrievances();
   };
 
-  const handleProfessionalClick = () => {
+  const handleProfessionalClick = async () => {
     setShowPersonalData(false);
     setShowProfessionalData(true);
     fetchRecentGrievance();
   };
 
-  const handleTotalClick = () => {
+  const handleTotalClick = async () => {
     fetchManagerGrievances();
   };
 
-  const handleRecentClick = () => {
-    fetchRecentGrievance();
+  const handleSolvedClick = async () => {
+    // fetchTotalGrievancesSolved();
   };
 
-  const handleResolveButtonClick = () => {
-    setShowResolveOptions(true);
-  };
-
-  const handleMeetingButtonClick = async () => {
-    try {
-      // Make API call to update the status of the grievance to "completed"
-      await axios.put("http://localhost:8080/api/grievance/resolve");
-      // Optionally, you can add logic to handle success or display a message
-      console.log("Grievance resolved successfully");
-      // After resolving the grievance, fetch the recent grievance again to update the UI
-      fetchRecentGrievance();
-    } catch (error) {
-      console.error("Error resolving grievance:", error);
-      // Optionally, you can add logic to handle errors or display an error message
-    }
-  };
-
-  const handleCallButtonClick = async () => {
-    try {
-      // Make API call to update the status of the grievance to "completed"
-      await axios.put("http://localhost:8080/api/grievance/resolve");
-      // Optionally, you can add logic to handle success or display a message
-      console.log("Grievance resolved successfully");
-      // After resolving the grievance, fetch the recent grievance again to update the UI
-      fetchRecentGrievance();
-    } catch (error) {
-      console.error("Error resolving grievance:", error);
-      // Optionally, you can add logic to handle errors or display an error message
-    }
-  };
-
+  // Fetch total grievances on initial render
   useEffect(() => {
-    fetchTotalGrievances();
+    // fetchTotalGrievancesSolved();
   }, []);
 
   return (
-    <>
-      <Header />
-      <Box className="flex justify-center mt-8">
-        <Button
-          onClick={handlePersonalClick}
-          variant={showPersonalData ? "contained" : "outlined"}
-          className="text-lg mr-4"
-        >
-          PERSONAL
-        </Button>
-        <Button
-          onClick={handleOpen}
-          variant="contained"
-          color="primary"
-          className="text-lg mr-4"
-        >
-          RAISE GRIEVANCE
-        </Button>
-        <Button
-          onClick={handleProfessionalClick}
-          variant={showProfessionalData ? "contained" : "outlined"}
-          className="text-lg"
-        >
-          PROFESSIONAL
-        </Button>
-      </Box>
-
-      {showPersonalData && (
-        <Box className="w-80 mx-auto mt-8">
-          <Typography variant="h3" className="text-lg mt-8">
-            HR Grievances
-          </Typography>
-          <Box className="flex justify-between mt-4">
-            <Button onClick={handleTotalClick} className="text-lg">
-              TOTAL
-            </Button>
-            <Button onClick={handleRecentClick} className="text-lg">
-              RECENT
-            </Button>
-          </Box>
-          <Typography variant="body1" className="text-lg mt-4">
-            Total grievances raised: {totalGrievances}
-          </Typography>
-          <Box className="mt-8">
-            <Typography variant="h4" className="text-lg">
-              Manager Grievances List
-            </Typography>
-            <ul className="list-none pl-0">
-              {managerGrievances.map((grievance, index) => (
-                <li
-                  key={index}
-                  className={`mb-4 border rounded border-gray-300 p-4 ${
-                    grievance.status === "resolved"
-                      ? "bg-green-100"
-                      : "bg-red-100"
-                  }`}
-                >
-                  {grievance.name} - - {grievance.description} --{" "}
-                  <span
-                    className={
-                      grievance.status === "resolved"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }
-                  >
-                    {grievance.status}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Box>
-        </Box>
-      )}
-
-      {showProfessionalData && (
-        <Box className="w-80 mx-auto mt-8">
-          <Typography variant="h5" className="text-lg mt-8">
-            Recent Manager Grievance
-          </Typography>
-          <Typography>
-            {`${recentGrievance.name} - ${recentGrievance.description}- ${recentGrievance.status}`}
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            className="mt-8"
-            onClick={handleResolveButtonClick}
+    <div className="bg-blue-100 min-h-screen">
+      <>
+        <h1 className="text-3xl text-center mt-10 font-bold text-gray-800">
+          WELCOME MANAGER
+        </h1>
+        <div className="flex justify-center mt-20">
+          <button
+            onClick={handlePersonalClick}
+            className={`px-4 py-2 rounded ${
+              showPersonalData
+                ? "bg-blue-500 text-white"
+                : "bg-blue-200 text-blue-800"
+            } mr-4`}
           >
-            RESOLVE
-          </Button>
-          {showResolveOptions && (
-            <Box className="mt-4">
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                className="mr-4"
-                onClick={handleMeetingButtonClick}
-              >
-                FIX MEETING
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={handleCallButtonClick}
-              >
-                CALL
-              </Button>
-            </Box>
-          )}
-        </Box>
-      )}
+            PERSONAL
+          </button>
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-lg p-8 rounded">
-          <Typography id="modal-title" variant="h6" component="h2">
-            Raise Grievance
-          </Typography>
-          <Typography id="modal-description" className="mt-4">
-            <GrievanceForm onSubmit={handleFormSubmit} />
-          </Typography>
-        </Box>
-      </Modal>
-      <Footer />
-    </>
+          <button
+            onClick={handleOpen}
+            className="px-4 py-2 rounded bg-blue-500 text-white mr-4"
+          >
+            RAISE GRIEVANCE
+          </button>
+          <button
+            onClick={handleProfessionalClick}
+            className={`px-4 py-2 rounded ${
+              showProfessionalData
+                ? "bg-blue-500 text-white"
+                : "bg-blue-200 text-blue-800"
+            }`}
+          >
+            PROFESSIONAL
+          </button>
+        </div>
+
+        {showPersonalData && (
+          <div className="w-80 mx-auto mt-20">
+            <h3 className="text-xl mt-4">Manager Grievances</h3>
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={handleTotalClick}
+                className="px-4 py-2 rounded border border-black-500 bg-blue-300"
+              >
+                TOTAL
+              </button>
+            </div>
+
+            <div className="mt-8">
+              <h4 className="text-lg">Manager Grievances List</h4>
+              <ol
+                className="mb-4 border rounded border-gray-300 p-4"
+                style={{ width: "100%" }}
+              >
+                {managerGrievances.map((grievance, index) => (
+                  <li
+                    key={index}
+                    className={`mb-4 border rounded border-gray-300 p-4 ${
+                      grievance.status !== "resolved" ? "bg-red-100" : ""
+                    }`}
+                    style={{ width: "100%" }}
+                  >
+                    {grievance.name} -- {grievance.description} --{" "}
+                    {grievance.date} -- {grievance.time} --{" "}
+                    {grievance.status !== "resolved" && (
+                      <span
+                        className={
+                          grievance.status === "processing"
+                            ? "bg-red-500 text-white p-1 rounded cursor-pointer"
+                            : "bg-green-600 text-white p-1 rounded cursor-pointer"
+                        }
+                        onClick={() => {
+                          handleResolve(grievance._id);
+                          alert(
+                            "Your grievance has been resolved successfully."
+                          );
+                        }}
+                      >
+                        {grievance.status}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        )}
+
+        {showProfessionalData && (
+          <div className="w-80 mx-auto mt-20">
+            <h3 className="text-xl mt-4">Recent Manager Grievance</h3>
+            <div className="flex items-center mt-4">
+              {recentGrievance ? (
+                <>
+                  <span className="mr-2">{recentGrievance.name} - </span>
+                  <span className="mr-2">{recentGrievance.description} - </span>
+                  <span
+                    style={{
+                      backgroundColor: "red",
+                      padding: "0.2rem 0.5rem",
+                      borderRadius: "0.2rem",
+                      color: "white",
+                      border: "none",
+                    }}
+                    className="mr-2"
+                  >
+                    {recentGrievance.status}
+                  </span>
+                  {/* Resolve Button */}
+                  {recentGrievance.status !== "resolved" && (
+                    <button
+                      className="bg-green-500 text-white py-1 px-2 rounded"
+                      onClick={() => {
+                        handleResolve(recentGrievance._id);
+                        alert("Your grievance has been resolved successfully.");
+                      }}
+                    >
+                      Resolve
+                    </button>
+                  )}
+                </>
+              ) : (
+                "No recent grievance"
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Modal for Grievance Form */}
+        {open && (
+          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-50">
+            <div className="bg-white rounded-lg p-8 w-80">
+              <h2 className="text-lg mb-4">Raise Grievance</h2>
+              <GrievanceForm onSubmit={handleFormSubmit} />
+            </div>
+          </div>
+        )}
+
+        {/* Footer */}
+        <footer className="fixed bottom-0 left-0 w-full bg-black text-white text-center py-4">
+          © 2024 QuGates Grievance Portal. All Rights Reserved.
+        </footer>
+      </>
+    </div>
   );
 };
 

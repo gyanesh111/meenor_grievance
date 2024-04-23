@@ -185,10 +185,22 @@ const RaiseGrievance = ({ onSubmit }) => {
     <>
       <Button
         onClick={handleOpen}
-        sx={{ fontSize: "1.5rem", marginRight: "10px" }}
+        sx={{
+          fontSize: "1.5rem",
+          marginRight: "10px",
+          backgroundColor: "#1976d2",
+          color: "#fff",
+          padding: "10px 20px",
+          borderRadius: "5px",
+          border: "none",
+          "&:hover": {
+            backgroundColor: "#135ca9",
+          },
+        }}
       >
         RAISE GRIEVANCE
       </Button>
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -270,147 +282,192 @@ const DeveloperPage = () => {
   }, []);
 
   return (
-    <>
-      <AppBar position="sticky" sx={{ backgroundColor: "#1976d2" }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <RouterLink
-              to="/"
-              style={{ color: "white", textDecoration: "none" }}
-            >
-              Grievance Portal
-            </RouterLink>
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Typography
-        variant="h1"
-        sx={{
-          fontSize: "2rem",
-          textAlign: "center",
-          backgroundColor: "#f0f0f0",
-        }}
-      >
-        WELCOME DEV.
-      </Typography>
-
-      <Box
-        sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
-      >
-        <Button
-          onClick={handleOpen} // Open the form directly on button click
-          sx={{ fontSize: "1.5rem", marginRight: "10px" }}
-        >
-          Raise Grievance Form
-        </Button>
-        <Button
-          onClick={() => setShowPersonal(true)}
-          sx={{ fontSize: "1.5rem" }}
-        >
-          Personal
-        </Button>
-      </Box>
-
-      {showPersonal && (
-        <Box
+    <div className="bg-blue-100 min-h-screen">
+      <>
+        <AppBar position="sticky" sx={{ backgroundColor: "#1976d2" }}>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              <RouterLink
+                to="/"
+                style={{ color: "white", textDecoration: "none" }}
+              >
+                Grievance Portal
+              </RouterLink>
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Typography
+          variant="h1"
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginTop: "20px",
+            fontSize: "2rem",
+            textAlign: "center",
+            backgroundColor: "#f0f0f0",
+            padding: "10px",
+            borderRadius: "10px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+            marginBottom: "20px",
           }}
         >
-          <Typography
-            variant="h3"
-            sx={{ fontSize: "1.5rem", marginBottom: "10px" }}
-          >
-            Personal:
-          </Typography>
+          WELCOME DEVELOPER
+        </Typography>
+
+        <Box
+          sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
+        >
           <Button
-            onClick={handleFetchTotalGrievances}
-            sx={{ fontSize: "1.5rem", marginBottom: "10px" }}
+            onClick={handleOpen}
+            sx={{
+              fontSize: "1.5rem",
+              marginRight: "10px",
+              backgroundColor: "#1976d2",
+              color: "#fff",
+              padding: "10px 20px",
+              borderRadius: "5px",
+              border: "none",
+              "&:hover": {
+                backgroundColor: "#135ca9",
+              },
+            }}
           >
-            Total Grievances: {developerGrievances.length}
+            Raise Grievance
           </Button>
+
+          <Button
+            onClick={() => setShowPersonal(true)}
+            sx={{
+              fontSize: "1.5rem",
+              backgroundColor: "#1976d2",
+              color: "#fff",
+              padding: "10px 20px",
+              borderRadius: "5px",
+              border: "none",
+              "&:hover": {
+                backgroundColor: "#135ca9",
+              },
+            }}
+          >
+            Personal
+          </Button>
+        </Box>
+
+        {showPersonal && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: "20px",
+            }}
+          >
+            <Typography
+              variant="h3"
+              sx={{
+                fontSize: "1.5rem",
+                marginBottom: "10px",
+                fontWeight: "bold",
+                color: "#333", // Adjust color as needed
+              }}
+            >
+              Grievance History
+            </Typography>
+
+            <Button
+              onClick={handleFetchTotalGrievances}
+              sx={{ fontSize: "1.5rem", marginBottom: "10px", color: "blue" }}
+            >
+              Total Grievances
+            </Button>
+
+            {/* 
           <Button sx={{ fontSize: "1.5rem", marginBottom: "10px" }}>
             Under Processing: {developerGrievances.processing}
           </Button>
           <Button sx={{ fontSize: "1.5rem", marginBottom: "10px" }}>
             Resolved: {developerGrievances.resolved}
           </Button>
-          <Button onClick={handleOpen} sx={{ fontSize: "1.5rem" }}>
-            Raise Grievance Form
-          </Button>
-        </Box>
-      )}
+          */}
+          </Box>
+        )}
 
-      {/* Modal for Grievance Form */}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            maxWidth: "80%",
-            minWidth: "400px",
-          }}
+        {/* Modal for Grievance Form */}
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
         >
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Raise Grievance
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <GrievanceForm onSubmit={handleClose} />
-          </Typography>
-        </Box>
-      </Modal>
-
-      {/* Table to display grievances */}
-      {showTable && (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Grievance ID</TableCell>
-                <TableCell>Grievance Name</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {developerGrievances[0]?.grievanceHistory.map((grievance) => (
-                <TableRow key={grievance._id}>
-                  <TableCell>{grievance.grievanceId}</TableCell>
-                  <TableCell>{grievance.grievanceName}</TableCell>
-                  <TableCell>{grievance.grievanceStatus}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-
-      <AppBar
-        position="sticky"
-        sx={{ top: "auto", bottom: 0, backgroundColor: "#000" }}
-      >
-        <Toolbar>
-          <Typography
-            variant="body1"
-            gutterBottom
-            sx={{ flexGrow: 1, color: "#fff" }}
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              maxWidth: "80%",
+              minWidth: "400px",
+            }}
           >
-            © 2024 Grievance Portal. All Rights Reserved.
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    </>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Raise Grievance
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              <GrievanceForm onSubmit={handleClose} />
+            </Typography>
+          </Box>
+        </Modal>
+
+        {/* Table to display grievances */}
+        {showTable && (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }}>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "#1976d2", color: "#fff" }}>
+                  <TableCell sx={{ fontWeight: "bold" }}>
+                    Grievance ID
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>
+                    Grievance Name
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {developerGrievances[0]?.grievanceHistory.map((grievance) => (
+                  <TableRow key={grievance._id}>
+                    <TableCell>
+                      <Box bgcolor={grievance.idColor} p={1}>
+                        {grievance.grievanceId}
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Box bgcolor={grievance.nameColor} p={1}>
+                        {grievance.grievanceName}
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+
+        <AppBar
+          position="fixed"
+          sx={{ top: "auto", bottom: 0, backgroundColor: "#000" }}
+        >
+          <Toolbar>
+            <Typography
+              variant="body1"
+              gutterBottom
+              sx={{ flexGrow: 1, color: "#fff" }}
+            >
+              © 2024 Grievance Portal. All Rights Reserved.
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </>
+    </div>
   );
 };
 

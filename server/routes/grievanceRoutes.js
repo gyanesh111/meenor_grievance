@@ -72,13 +72,13 @@ router.get(
 //   grievanceController.getManagerGrievancesFromHistory
 // );
 
-// Update a grievance by ID
-router.put("/:id", grievanceController.updateGrievanceById);
+// // Update a grievance by ID
+// router.put("/:id", grievanceController.updateGrievanceById);
 
 // Resolve a grievance by ID
-router.put("/:id/resolve", grievanceController.resolveGrievanceById);
+router.put("/resolve/:id", grievanceController.resolveGrievanceById);
 
 // Delete a grievance by ID
-router.delete("/:id", grievanceController.deleteGrievanceById);
+router.delete("/delete/:id", grievanceController.deleteGrievanceById);
 
 module.exports = router;

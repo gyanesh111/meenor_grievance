@@ -73,17 +73,14 @@ const HrPage = () => {
     fetchTotalGrievancesSolved();
   }, []);
 
-  const handleResolve = async () => {
+  const handleResolve = async (_id) => {
     try {
-      if (recentGrievance) {
-        // Make a PUT request to update the grievance status to 'Completed'
-        const response = await axios.put(
-          `http://localhost:8080/api/grievance/${recentGrievance._id}/resolve`
-        );
-        console.log("Grievance resolved:", response.data);
-        // Update the recent grievance status locally
-        setRecentGrievance({ ...recentGrievance, status: "Completed" });
-        // Set the state variable to indicate that the grievance has been resolved
+      // Assuming recentGrievance has an _id property
+      const response = await axios.put(
+        `http://localhost:8080/api/grievance/resolve/${_id}`
+      );
+      // Assuming the API returns the updated grievance data
+      if (response.data.status === "resolved") {
         setGrievanceResolved(true);
       }
     } catch (error) {
@@ -129,197 +126,203 @@ const HrPage = () => {
   };
 
   return (
-    <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static" color="primary">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              <RouterLink
-                to="/"
-                style={{ textDecoration: "none", color: "white" }}
-              >
-                Grievance Portal
-              </RouterLink>
-            </Typography>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, textAlign: "center" }}
-            >
-              QUGATES TECHNOLOGIES
-            </Typography>
-            <nav>
-              <RouterLink
-                to="/login"
-                color="inherit"
-                style={{ marginRight: 20 }}
-              >
-                Login
-              </RouterLink>
-              <RouterLink
-                to="/about"
-                color="inherit"
-                style={{ marginRight: 20 }}
-              >
-                About
-              </RouterLink>
-              <RouterLink to="/contact" color="inherit">
-                Contact
-              </RouterLink>
-            </nav>
-          </Toolbar>
-        </AppBar>
-      </Box>
-
-      <Typography variant="h4" align="center" sx={{ marginTop: "2rem" }}>
-        HR Dashboard
-      </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "2rem",
-        }}
-      >
-        <Button
-          variant="contained"
-          onClick={handlePersonalClick}
-          sx={{ marginRight: "1rem" }}
-        >
-          Personal
-        </Button>
-        <Button variant="contained" onClick={handleProfessionalClick}>
-          Professional
-        </Button>
-      </Box>
-
-      {showPersonalData && (
-        <Box sx={{ marginTop: "0.2rem", textAlign: "center" }}>
-          <Button
-            variant="contained"
-            onClick={handleFetchTotalGrievances}
-            sx={{ marginRight: "0.5rem" }}
-          >
-            Total Grievances Alotted
-          </Button>
-          <Button
-            variant="contained"
-            onClick={fetchTotalGrievancesSolved}
-            sx={{ marginRight: "1rem" }}
-          >
-            Total Grievances Resolved
-          </Button>
-
-          {totalGrievances > 0 && (
-            <Box sx={{ marginTop: "0.5rem", textAlign: "left" }}>
-              <Typography variant="h6">Total HR Grievances:</Typography>
-              <ul>
-                {hrGrievances.map((grievance) => (
-                  <li
-                    key={grievance._id}
-                    className="mb-2 border rounded border-gray-100 p-1"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="mb-1">{grievance.name}</p>
-                        <p className="mb-1">{grievance.description}</p>
-                      </div>
-                      <span
-                        className={
-                          grievance.status === "resolved"
-                            ? "bg-green-800 text-white p-1 rounded"
-                            : "bg-red-500 text-white p-1 rounded"
-                        }
-                      >
-                        {grievance.status}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </Box>
-          )}
-        </Box>
-      )}
-
-      {showProfessionalData && (
-        <Box sx={{ marginTop: "2rem", textAlign: "center" }}>
-          {recentGrievance && (
-            <>
-              <Typography variant="h6">Recent Grievance:</Typography>
-              <Typography>
-                {`${recentGrievance.name} - ${recentGrievance.description} `}
-                <span
-                  className={
-                    recentGrievance.status === "resolved"
-                      ? "bg-green-500 text-white p-1 rounded"
-                      : "bg-red-500 text-white p-1 rounded"
-                  }
+    <div className="bg-blue-100 min-h-screen">
+      <>
+        <Box sx={{ flexGrow: 1 }}>
+          <AppBar position="static" color="primary">
+            <Toolbar>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                <RouterLink
+                  to="/"
+                  style={{ textDecoration: "none", color: "white" }}
                 >
-                  {recentGrievance.status}
-                </span>
-                {` ${recentGrievance.date}`}
+                  Grievance Portal
+                </RouterLink>
               </Typography>
-
-              {recentGrievance.status !== "Completed" && (
-                <>
-                  <Button
-                    variant="contained"
-                    onClick={handleResolve}
-                    sx={{ marginTop: "1rem" }}
-                  >
-                    Resolve
-                  </Button>
-                  {grievanceResolved && (
-                    <Box sx={{ marginTop: "1rem" }}>
-                      <Button
-                        variant="contained"
-                        onClick={handleMeeting}
-                        sx={{ marginRight: "0.5rem" }}
-                      >
-                        FIX MEETING
-                      </Button>
-                      <Button variant="contained" onClick={handleCall}>
-                        CALL
-                      </Button>
-                    </Box>
-                  )}
-                </>
-              )}
-            </>
-          )}
-          {!recentGrievance && (
-            <Typography variant="body1">No recent grievance found.</Typography>
-          )}
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ flexGrow: 1, textAlign: "center" }}
+              >
+                QUGATES TECHNOLOGIES
+              </Typography>
+              <nav>
+                <RouterLink
+                  to="/login"
+                  color="inherit"
+                  style={{ marginRight: 20 }}
+                >
+                  Login
+                </RouterLink>
+                <RouterLink
+                  to="/about"
+                  color="inherit"
+                  style={{ marginRight: 20 }}
+                >
+                  About
+                </RouterLink>
+                <RouterLink to="/contact" color="inherit">
+                  Contact
+                </RouterLink>
+              </nav>
+            </Toolbar>
+          </AppBar>
         </Box>
-      )}
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+        <Typography variant="h4" align="center" sx={{ marginTop: "2rem" }}>
+          HR Dashboard
+        </Typography>
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "2rem",
           }}
         >
-          {/* No Grievance Form here */}
+          <Button
+            variant="contained"
+            onClick={handlePersonalClick}
+            sx={{ marginRight: "1rem" }}
+          >
+            Personal
+          </Button>
+          <Button variant="contained" onClick={handleProfessionalClick}>
+            Professional
+          </Button>
         </Box>
-      </Modal>
 
-      <Box sx={{ flexGrow: 1 }}>
-        <footer
-          style={{
+        {showPersonalData && (
+          <Box sx={{ marginTop: "0.2rem", textAlign: "center" }}>
+            <Button
+              variant="contained"
+              onClick={handleFetchTotalGrievances}
+              sx={{ marginRight: "0.5rem" }}
+            >
+              Total Grievances Alotted
+            </Button>
+            <Button
+              variant="contained"
+              onClick={fetchTotalGrievancesSolved}
+              sx={{ marginRight: "1rem" }}
+            >
+              Total Grievances Resolved
+            </Button>
+
+            {totalGrievances > 0 && (
+              <Box sx={{ marginTop: "0.5rem", textAlign: "left" }}>
+                <Typography variant="h6">Total HR Grievances:</Typography>
+                <ul>
+                  {hrGrievances.map((grievance) => (
+                    <li
+                      key={grievance._id}
+                      className="mb-2 border rounded border-gray-100 p-1"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="mb-1">{grievance.name}</p>
+                          <p className="mb-1">{grievance.description}</p>
+                          <p className="mb-1">{grievance.date}</p>
+                          <p className="mb-1">{grievance.time}</p>
+                        </div>
+                        {grievance.status !== "resolved" && (
+                          <span
+                            className={
+                              grievance.status === "processing"
+                                ? "bg-red-500 text-white p-1 rounded cursor-pointer"
+                                : "bg-green-600 text-white p-1 rounded cursor-pointer"
+                            }
+                            onClick={() => {
+                              handleResolve(grievance._id);
+                              alert(
+                                "Your grievance has been resolved successfully."
+                              );
+                            }}
+                          >
+                            {grievance.status}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Box>
+            )}
+          </Box>
+        )}
+
+        {showProfessionalData && (
+          <Box sx={{ marginTop: "2rem", textAlign: "center" }}>
+            {recentGrievance && (
+              <>
+                <Typography variant="h6">Recent Grievance:</Typography>
+                <Typography>
+                  {`${recentGrievance.name} - ${recentGrievance.description} `}
+                  <span
+                    className={
+                      recentGrievance.status === "resolved"
+                        ? "bg-green-500 text-white p-1 rounded"
+                        : "bg-red-500 text-white p-1 rounded"
+                    }
+                  >
+                    {recentGrievance.status}
+                  </span>
+                  {` ${recentGrievance.date}`}
+                </Typography>
+
+                {recentGrievance.status !== "resolved" && (
+                  <>
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        handleResolve(recentGrievance._id);
+                        alert("Your grievance has been resolved successfully.");
+                      }}
+                      sx={{ marginTop: "1rem" }}
+                    >
+                      Resolve
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+            {!recentGrievance && (
+              <Typography variant="body1">
+                No recent grievance found.
+              </Typography>
+            )}
+          </Box>
+        )}
+
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            {/* No Grievance Form here */}
+          </Box>
+        </Modal>
+
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            height: 12,
+            width: "100%",
             backgroundColor: "#222",
             color: "#fff",
             padding: "20px 0",
@@ -327,11 +330,11 @@ const HrPage = () => {
           }}
         >
           <Typography variant="body1" gutterBottom>
-            © 2024 Grievance Portal. All Rights Reserved.
+            © 2024 QuGates Grievance Portal. All Rights Reserved.
           </Typography>
-        </footer>
-      </Box>
-    </>
+        </Box>
+      </>
+    </div>
   );
 };
 

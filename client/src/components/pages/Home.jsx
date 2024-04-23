@@ -11,7 +11,7 @@ const Home = () => {
             <h4 className="text-white font-bold text-xl">Grievance Portal</h4>
             <h4 className="text-white text-center"> QUGATES TECH. PVT LTD. </h4>
             <nav className="space-x-4">
-              <RouterLink to="/Glogin" className="text-white text-lg">
+              <RouterLink to="/login" className="text-white text-lg">
                 Login
               </RouterLink>
               <RouterLink to="/about" className="text-white text-lg">
@@ -55,7 +55,9 @@ const Home = () => {
           </div>
           <div className="flex items-center justify-center">
             <button className="text-lg bg-blue-500 text-white px-6 py-3 rounded-full">
-              Login
+              <RouterLink to="/Glogin" className="text-white text-lg">
+                Login
+              </RouterLink>
             </button>
           </div>
         </div>
@@ -77,7 +79,7 @@ const Home = () => {
             <p className="text-lg">Phone: +919019733006</p>
           </div>
           <p className="text-lg">
-            &copy; 2024 Grievance Portal. All Rights Reserved.
+            &copy; 2024 QuGAtes Grievance Portal. All Rights Reserved.
           </p>
         </div>
       </footer>

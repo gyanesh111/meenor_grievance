@@ -639,17 +639,82 @@ const grievanceController = {
     }
   },
 
-  // Controller function to resolve a grievance by ID and notify the employee
+  // // Controller function to resolve a grievance by ID and notify the employee
+  // resolveGrievanceById: async (req, res) => {
+  //   try {
+  //     const { id } = req.params;
+
+  //     // Find and update the grievance status to 'Completed'
+  //     const resolvedGrievance = await Grievance.findByIdAndUpdate(
+  //       id,
+  //       { status: "Completed" },
+  //       { new: true }
+  //     );
+  //     if (!resolvedGrievance) {
+  //       return res.status(404).json({ error: "Grievance not found" });
+  //     }
+
+  //     // Find the employee by ID
+  //     const employee = await Employee.findById(resolvedGrievance.employeeId);
+  //     if (!employee) {
+  //       return res.status(404).json({ error: "Employee not found" });
+  //     }
+
+  //     // Update the employee's grievance history
+  //     employee.grievanceHistory.push({
+  //       grievanceId: resolvedGrievance._id,
+  //       grievanceName: resolvedGrievance.description,
+  //     });
+  //     await employee.save();
+
+  //     // Send notification email to the employee
+  //     const mailOptions = {
+  //       from: "gyaneshverma999@gmail.com",
+  //       to: employee.email,
+  //       subject: "Grievance Resolved",
+  //       text: `Your grievance has been resolved:\n\n${resolvedGrievance.description}`,
+  //     };
+  //     await transporter.sendMail(mailOptions);
+  //     console.log(
+  //       `Notification sent to employee ${employee.email} for resolved grievance: ${resolvedGrievance._id}`
+  //     );
+
+  //     // Send response with updated grievance information
+  //     res.json({
+  //       message: "Grievance resolved successfully",
+  //       grievance: resolvedGrievance,
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //     res.status(500).json({ error: "Internal server error" });
+  //   }
+  // },
+
   resolveGrievanceById: async (req, res) => {
     try {
       const { id } = req.params;
+      // Define an array of database collections to search for the grievance
+      const collections = [
+        Grievance,
+        hrgrievances,
+        managergrievances,
+        tlgrievances,
+      ];
 
-      // Find and update the grievance status to 'Completed'
-      const resolvedGrievance = await Grievance.findByIdAndUpdate(
-        id,
-        { status: "Completed" },
-        { new: true }
-      );
+      let resolvedGrievance = null;
+      // Iterate over each collection and attempt to update the grievance
+      for (const collection of collections) {
+        resolvedGrievance = await collection.findByIdAndUpdate(
+          id,
+          { status: "Completed" },
+          { new: true }
+        );
+        if (resolvedGrievance) {
+          break; // Break out of the loop if grievance is found in any collection
+        }
+      }
+
+      // If grievance is not found in any collection, return 404
       if (!resolvedGrievance) {
         return res.status(404).json({ error: "Grievance not found" });
       }
